@@ -1,0 +1,235 @@
+user@UPLC:~$ mysql -u root -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 37
+Server version: 5.5.58-0+deb8u1 (Debian)
+
+Copyright (c) 2000, 2017, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases ;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| IMDB               |
+| hospital           |
+| mysql              |
+| performance_schema |
+| testdb             |
++--------------------+
+6 rows in set (0.03 sec)
+
+mysql> use hospital
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> show tables;
++--------------------+
+| Tables_in_hospital |
++--------------------+
+| Academics          |
+| Building_info      |
+| Department         |
+| Doc_Category       |
+| Doc_Rooms          |
+| Doc_Schedule       |
+| Doctor             |
+| Doctors_personals  |
+| Qualifications     |
+| floor_info         |
+| specialization     |
+| specializes_in     |
++--------------------+
+12 rows in set (0.00 sec)
+
+mysql> create table Patient (
+    -> pid int not null auto_increment primary key 
+    -> ,
+    -> name varchar(50) not null,
+    -> dob date not null ,
+    -> gender char not null,
+    -> address varchar(150) ,
+    -> blood_group varchar(4) Default 'unk',
+    -> phone_1 bigint not null,
+    -> phone_2 bigint ,
+    -> email varchar(60) );
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> create table labs (
+    -> lab_id int not null auto_increment primary key,
+    -> name varchar(30) not null );
+Query OK, 0 rows affected (0.10 sec)
+
+mysql> create tale test (
+    -> test_id int not null auto_increment primary key,
+    -> test_name varchar(40) not null ,
+    -> lab int not null,
+    -> cost float not null,
+    -> constraint fk_test_lab foreign key (lab) references labs (lab_id));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'tale test (
+test_id int not null auto_increment primary key,
+test_name varchar(4' at line 1
+mysql> create table test ( test_id int not null auto_increment primary key, test_name varchar(40) not null , lab int not null, cost float not null, constraint fk_test_lab foreign key (lab) references labs (lab_id));
+Query OK, 0 rows affected (0.11 sec)
+
+mysql> rename table labs to lab ;
+Query OK, 0 rows affected (0.05 sec)
+
+mysql> describe lab;
++--------+-------------+------+-----+---------+----------------+
+| Field  | Type        | Null | Key | Default | Extra          |
++--------+-------------+------+-----+---------+----------------+
+| lab_id | int(11)     | NO   | PRI | NULL    | auto_increment |
+| name   | varchar(30) | NO   |     | NULL    |                |
++--------+-------------+------+-----+---------+----------------+
+2 rows in set (0.00 sec)
+
+mysql> describe test;
++-----------+-------------+------+-----+---------+----------------+
+| Field     | Type        | Null | Key | Default | Extra          |
++-----------+-------------+------+-----+---------+----------------+
+| test_id   | int(11)     | NO   | PRI | NULL    | auto_increment |
+| test_name | varchar(40) | NO   |     | NULL    |                |
+| lab       | int(11)     | NO   | MUL | NULL    |                |
+| cost      | float       | NO   |     | NULL    |                |
++-----------+-------------+------+-----+---------+----------------+
+4 rows in set (0.00 sec)
+
+mysql> select COLUMN_NAME,CONSTRAINT_NAME , REFERENCED_COLUMN_NAME , REFERENCED_TABLE_NAME from information_schema.KEY_COLUMN_USAGE where TABLE_NAME = 'test';+-------------+-----------------+------------------------+-----------------------+
+| COLUMN_NAME | CONSTRAINT_NAME | REFERENCED_COLUMN_NAME | REFERENCED_TABLE_NAME |
++-------------+-----------------+------------------------+-----------------------+
+| test_id     | PRIMARY         | NULL                   | NULL                  |
+| lab         | fk_test_lab     | lab_id                 | lab                   |
++-------------+-----------------+------------------------+-----------------------+
+2 rows in set (0.00 sec)
+
+mysql> show tables;
++--------------------+
+| Tables_in_hospital |
++--------------------+
+| Academics          |
+| Building_info      |
+| Department         |
+| Doc_Category       |
+| Doc_Rooms          |
+| Doc_Schedule       |
+| Doctor             |
+| Doctors_personals  |
+| Patient            |
+| Qualifications     |
+| floor_info         |
+| lab                |
+| specialization     |
+| specializes_in     |
+| test               |
++--------------------+
+15 rows in set (0.00 sec)
+
+mysql> exit
+Bye
+user@UPLC:~$ 
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+user@UPLC:~$ mysql -u root -p  
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 40
+Server version: 5.5.58-0+deb8u1 (Debian)
+
+Copyright (c) 2000, 2017, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use hospital
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> show Doctor status from hospital like 'Doctor';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'Doctor status from hospital like 'Doctor'' at line 1
+mysql> show Table status from hospital like 'Doctor';
++--------+--------+---------+------------+------+----------------+-------------+-----------------+--------------+-----------+----------------+---------------------+-------------+------------+-------------------+----------+----------------+---------+
+| Name   | Engine | Version | Row_format | Rows | Avg_row_length | Data_length | Max_data_length | Index_length | Data_free | Auto_increment | Create_time         | Update_time | Check_time | Collation         | Checksum | Create_options | Comment |
++--------+--------+---------+------------+------+----------------+-------------+-----------------+--------------+-----------+----------------+---------------------+-------------+------------+-------------------+----------+----------------+---------+
+| Doctor | InnoDB |      10 | Compact    |    0 |              0 |       16384 |               0 |        32768 |  15728640 |              1 | 2018-04-30 13:04:20 | NULL        | NULL       | latin1_swedish_ci |     NULL |                |         |
++--------+--------+---------+------------+------+----------------+-------------+-----------------+--------------+-----------+----------------+---------------------+-------------+------------+-------------------+----------+----------------+---------+
+1 row in set (0.00 sec)
+
+mysql> show create table Doctor;
++--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table  | Create Table                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
++--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Doctor | CREATE TABLE `Doctor` (
+  `Doc_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `Dname` varchar(30) NOT NULL,
+  `DOJ` date NOT NULL,
+  `fee` float NOT NULL,
+  `office_email` varchar(80) DEFAULT NULL,
+  `office_phone` varchar(10) DEFAULT NULL,
+  `Department_no` int(10) unsigned NOT NULL,
+  `date_of_first_practice` date NOT NULL,
+  `type` int(11) NOT NULL,
+  PRIMARY KEY (`Doc_id`),
+  KEY `fk_dept` (`Department_no`),
+  KEY `fk_Doc_type` (`type`),
+  CONSTRAINT `fk_dept` FOREIGN KEY (`Department_no`) REFERENCES `Department` (`dno`),
+  CONSTRAINT `fk_Doc_type` FOREIGN KEY (`type`) REFERENCES `Doc_Category` (`cid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 |
++--------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+
+mysql> select COLUMN_NAME,CONSTRAINT_NAME , REFERENCED_COLUMN_NAME , REFERENCED_TABLE_NAME from information_schema.KEY_COLUMN_USAGE where TABLE_NAME = 'Doctor';
++---------------+-----------------+------------------------+-----------------------+
+| COLUMN_NAME   | CONSTRAINT_NAME | REFERENCED_COLUMN_NAME | REFERENCED_TABLE_NAME |
++---------------+-----------------+------------------------+-----------------------+
+| Doc_id        | PRIMARY         | NULL                   | NULL                  |
+| Department_no | fk_dept         | dno                    | Department            |
+| type          | fk_Doc_type     | cid                    | Doc_Category          |
++---------------+-----------------+------------------------+-----------------------+
+3 rows in set (0.00 sec)
+
+mysql> select * from information_schema.KEY_COLUMN_USAGE where TABLE_NAME = 'Doctor';+--------------------+-------------------+-----------------+---------------+--------------+------------+---------------+------------------+-------------------------------+-------------------------+-----------------------+------------------------+
+| CONSTRAINT_CATALOG | CONSTRAINT_SCHEMA | CONSTRAINT_NAME | TABLE_CATALOG | TABLE_SCHEMA | TABLE_NAME | COLUMN_NAME   | ORDINAL_POSITION | POSITION_IN_UNIQUE_CONSTRAINT | REFERENCED_TABLE_SCHEMA | REFERENCED_TABLE_NAME | REFERENCED_COLUMN_NAME |
++--------------------+-------------------+-----------------+---------------+--------------+------------+---------------+------------------+-------------------------------+-------------------------+-----------------------+------------------------+
+| def                | hospital          | PRIMARY         | def           | hospital     | Doctor     | Doc_id        |                1 |                          NULL | NULL                    | NULL                  | NULL                   |
+| def                | hospital          | fk_dept         | def           | hospital     | Doctor     | Department_no |                1 |                             1 | hospital                | Department            | dno                    |
+| def                | hospital          | fk_Doc_type     | def           | hospital     | Doctor     | type          |                1 |                             1 | hospital                | Doc_Category          | cid                    |
++--------------------+-------------------+-----------------+---------------+--------------+------------+---------------+------------------+-------------------------------+-------------------------+-----------------------+------------------------+
+3 rows in set (0.00 sec)
+
+mysql> select * from information_schema.KEY_COLUMN_USAGE where TABLE_NAME = 'Doctor';
++--------------------+-------------------+-----------------+---------------+--------------+------------+---------------+------------------+-------------------------------+-------------------------+-----------------------+------------------------+
+| CONSTRAINT_CATALOG | CONSTRAINT_SCHEMA | CONSTRAINT_NAME | TABLE_CATALOG | TABLE_SCHEMA | TABLE_NAME | COLUMN_NAME   | ORDINAL_POSITION | POSITION_IN_UNIQUE_CONSTRAINT | REFERENCED_TABLE_SCHEMA | REFERENCED_TABLE_NAME | REFERENCED_COLUMN_NAME |
++--------------------+-------------------+-----------------+---------------+--------------+------------+---------------+------------------+-------------------------------+-------------------------+-----------------------+------------------------+
+| def                | hospital          | PRIMARY         | def           | hospital     | Doctor     | Doc_id        |                1 |                          NULL | NULL                    | NULL                  | NULL                   |
+| def                | hospital          | fk_dept         | def           | hospital     | Doctor     | Department_no |                1 |                             1 | hospital                | Department            | dno                    |
+| def                | hospital          | fk_Doc_type     | def           | hospital     | Doctor     | type          |                1 |                             1 | hospital                | Doc_Category          | cid                    |
++--------------------+-------------------+-----------------+---------------+--------------+------------+---------------+------------------+-------------------------------+-------------------------+-----------------------+------------------------+
+3 rows in set (0.00 sec)
+
+mysql> select COLUMN_NAME,CONSTRAINT_NAME , REFERENCED_COLUMN_NAME , REFERENCED_TABLE_NAME from information_schema.KEY_COLUMN_USAGE where TABLE_NAME = 'Doctor';
++---------------+-----------------+------------------------+-----------------------+
+| COLUMN_NAME   | CONSTRAINT_NAME | REFERENCED_COLUMN_NAME | REFERENCED_TABLE_NAME |
++---------------+-----------------+------------------------+-----------------------+
+| Doc_id        | PRIMARY         | NULL                   | NULL                  |
+| Department_no | fk_dept         | dno                    | Department            |
+| type          | fk_Doc_type     | cid                    | Doc_Category          |
++---------------+-----------------+------------------------+-----------------------+
+3 rows in set (0.00 sec)
+
+mysql> exit
+Bye
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

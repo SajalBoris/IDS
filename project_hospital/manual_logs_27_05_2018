@@ -1,0 +1,485 @@
+user@UPLC:~$ mysql -u root -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 48
+Server version: 5.5.58-0+deb8u1 (Debian)
+
+Copyright (c) 2000, 2017, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databes;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'databes' at line 1
+mysql> show database
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'database' at line 1
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| IMDB               |
+| hospital           |
+| mysql              |
+| performance_schema |
+| testdb             |
++--------------------+
+6 rows in set (0.16 sec)
+
+mysql> use hospital
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql> describe hospital;
+ERROR 1146 (42S02): Table 'hospital.hospital' doesn't exist
+mysql> show tables;
++--------------------+
+| Tables_in_hospital |
++--------------------+
+| Academics          |
+| Building_info      |
+| Department         |
+| Doc_Category       |
+| Doc_Rooms          |
+| Doc_Schedule       |
+| Doctor             |
+| Doctors_personals  |
+| Patient            |
+| Qualifications     |
+| floor_info         |
+| lab                |
+| specialization     |
+| specializes_in     |
+| test               |
++--------------------+
+15 rows in set (0.00 sec)
+
+mysql> create table report(
+    -> report_id int auto_increment primary key,
+    -> status char not null,;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 3
+mysql> create table report(
+    -> report_id int auto_increment primary key not null,
+    -> status char not null,
+    -> patient_no int not null,
+    -> test_id int not null,
+    -> report_result blob ,
+    -> constraint fk_report_patient foreign key (patient_no) ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 7
+mysql> create table report(
+    -> report_id int auto_increment primary key not null,    -> status char not null,    -> patient_no int not null,    -> test_id int not null,    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 5
+mysql> create table report(
+    -> report_id int auto_increment primary key not null,
+    -> status char not null,
+    -> patient_id int not null,
+    -> test_id int not null,    -> report_result blob ,    -> constraint fk_report_patient foreign key (patient_id) references Patient(pid) , 
+    -> constraint fk_report_test foreign key (test_id) references test(test_id));  
+Query OK, 0 rows affected (0.22 sec)
+
+mysql> desribe report;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'desribe report' at line 1
+mysql> describe report;
++---------------+---------+------+-----+---------+----------------+
+| Field         | Type    | Null | Key | Default | Extra          |
++---------------+---------+------+-----+---------+----------------+
+| report_id     | int(11) | NO   | PRI | NULL    | auto_increment |
+| status        | char(1) | NO   |     | NULL    |                |
+| patient_id    | int(11) | NO   | MUL | NULL    |                |
+| test_id       | int(11) | NO   | MUL | NULL    |                |
+| report_result | blob    | YES  |     | NULL    |                |
++---------------+---------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> ;
+ERROR: 
+No query specified
+
+mysql> create table prescription(
+    -> pre_id int not null primary key,
+    -> status char not null ,
+    -> patient_id int not null,
+    -> doc_id int not null,
+    -> constraint fk_prescription_patient foreign key references Patient(pid),
+    -> constraint fk_prescription_doctor foreign key references Patient(pid),;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'references Patient(pid),
+constraint fk_prescription_doctor foreign key reference' at line 6
+mysql> create table prescription(
+    -> pre_id int not null primary key,
+    -> status char not null ,
+    -> patient_id int not null,
+    -> doc_id int not null,
+    -> constraint fk_prescription_patient foreign key(patient_id) references Patient(pid),
+    -> constraint fk_prescription_doctor foreign key(doc_id) references Doctor(Dc_id),
+    -> link blob );
+ERROR 1005 (HY000): Can't create table 'hospital.prescription' (errno: 150)
+mysql> create table prescription(
+    -> pre_id int not null primary key,
+    -> status char not null ,
+    -> patient_id int not null,
+    -> doc_id int not null,
+    -> constraint fk_prescription_patient foreign key (patient_id) references Patient (pid),
+    -> constraint fk_prescription_doctor foreign key (doc_id) references Doctor (Doc_id),
+    -> link blob );
+ERROR 1005 (HY000): Can't create table 'hospital.prescription' (errno: 150)
+mysql> create table prescription ( pre_id int not null primary key, status char not null , patient_id int not null, doc_id int not null, constraint fk_prescription_patient foreign key (patient_id) references Patient (pid), constraint fk_prescription_doctor foreign key (doc_id) references Doctor (Doc_id), link blob );
+ERROR 1005 (HY000): Can't create table 'hospital.prescription' (errno: 150)
+mysql> create table prescription ( pre_id int not null primary key, status char not null , patient_id int not null, doc_id int not null, constraint fk_pre_patient foreign key (patient_id) references Patient (pid), constraint fk_pre_doctor foreign key (doc_id) references Doctor (Doc_id), pre_link blob );
+ERROR 1005 (HY000): Can't create table 'hospital.prescription' (errno: 150)
+mysql> create table prescription ( pre_id int not null primary key, status char not null , patient_id int not null, doc_id unsigned int not null, constraint fk_pre_patient foreign key (patient_id) references Patient (pid), constraint fk_pre_doctor foreign key (doc_id) references Doctor (Doc_id), pre_link blob );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'unsigned int not null, constraint fk_pre_patient foreign key (patient_id) refere' at line 1
+mysql> create table prescription ( pre_id int not null primary key, status char not null , patient_id int not null, doc_id int unsigned  not null, constraint fk_pre_patient foreign key (patient_id) references Patient (pid), constraint fk_pre_doctor foreign key (doc_id) references Doctor (Doc_id), pre_link blob );
+Query OK, 0 rows affected (0.19 sec)
+
+mysql> create Bills(
+    -> bill_id int not null primary key,
+    -> pre_id int not null,
+    -> repo_id int not null,
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'Bills(
+bill_id int not null primary key,
+pre_id int not null,
+repo_id int not nu' at line 1
+mysql> create table Bills(
+    -> bill_id int not null primary key,
+    -> total float not null);
+Query OK, 0 rows affected (0.15 sec)
+
+mysql> create bill_receipt(
+    -> bill_id int not null,
+    -> repo_id int ,
+    -> pre_id int ,
+    -> constraint fk_bill_receipt_report foreign key (repo_id) references report(report_id),
+    -> constraint fk_bill_receipt_prescription foreign key (pre_id) references prescription(pre_id));
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'bill_receipt(
+bill_id int not null,
+repo_id int ,
+pre_id int ,
+constraint fk_bil' at line 1
+mysql> create table  bill_receipt( bill_id int not null, repo_id int , pre_id int , constraint fk_bill_receipt_report foreign key (repo_id) references report(report_id), constraint fk_bill_receipt_prescription foreign key (pre_id) references prescription(pre_id));
+Query OK, 0 rows affected (0.18 sec)
+
+mysql> alter table bill_receipt add constraint fk_bill_receipt_bill foreign key (bill_id) references Bills(bill_id) ;
+Query OK, 0 rows affected (0.39 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> create table medicine(
+    -> medi_id int not null primary key,
+    -> name varchar(40) not null ,
+    -> manufacturer varchar(40) not null,
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ')' at line 5
+mysql> create table medicine( medi_id int not null primary key, name varchar(40) not null , manufacturer varchar(40) not null );
+Query OK, 0 rows affected (0.10 sec)
+
+mysql> create table medicine_details(
+    -> medi_id int ,
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 2
+mysql> create table medicine_details(
+    -> medi_id int not null ,
+    -> expiry_date date not null ,
+    -> batch_no int ,
+    -> price float not null,
+    -> quantity_available int not null);
+Query OK, 0 rows affected (0.13 sec)
+
+mysql> alter table medicine_details add constraint fk_medicine_details_medicine foreign key (medi_id) references medicine (medi_id);
+Query OK, 0 rows affected (0.28 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> delimiter $$
+mysql> create trigger trg_patient before insert or before update on Patient 
+    -> for each row
+    -> begin
+    ->     declare msg varchar()$$
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'or before update on Patient 
+for each row
+begin
+    declare msg varchar()' at line 1
+mysql> drop trigger if exists trg_patient $$
+Query OK, 0 rows affected, 1 warning (0.14 sec)
+
+mysql> create trigger trg_patiend_id before insert or before update on Patient 
+    -> for each row
+    -> begin
+    ->     declare msg varchar(128)
+    ->     if new.pid <= 0 then
+    ->          set msg = concat('Error:Patient id should be > 0',cast(new.id as char));
+    ->          signal sqlstate '45000' set message_text = msg;
+    ->     end if ;
+    -> end
+    -> $$
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'or before update on Patient 
+for each row
+begin
+    declare msg varchar(128)
+   ' at line 1
+mysql> drop trigger if exists trg_patient $$
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+mysql> drop trigger if exists trg_patient_id $$
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+mysql> create trigger trg_patiend_id before insert or before update on Patient 
+    -> for each row
+    -> begin
+    -> declare msg varchar(128)
+    -> if new.pid <= 0 then
+    -> set msg = concat('Error:Patient id should be > 0',cast(new.id as char));    -> signal sqlstate '45000' set message_text = msg;    -> end if ;
+    -> end
+    -> $$
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'or before update on Patient 
+for each row
+begin
+declare msg varchar(128)
+if new.' at line 1
+mysql> create trigger trg_patiend_id before insert or update on Patient  for each row begin declare msg varchar(128) if new.pid <= 0 then set msg = concat('Error:Patient id should be > 0',cast(new.id as char)); signal sqlstate '45000' set message_text = msg; end if ; end$$
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'or update on Patient  for each row begin declare msg varchar(128) if new.pid <= ' at line 1
+mysql> create trigger trg_patiend_id_insert before insert on Patient  for each row begin declare msg varchar(128) if new.pid <= 0 then set msg = concat('Error:Patient id should be > 0',cast(new.id as char)); signal sqlstate '45000' set message_text = msg; end if ; end$$
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'if new.pid <= 0 then set msg = concat('Error:Patient id should be > 0',cast(new.' at line 1
+mysql> create trigger trg_patiend_id_insert before insert on Patient  for each row begin declare msg varchar(128); if new.pid <= 0 then set msg = concat('Error:Patient id should be > 0',cast(new.id as char)); signal sqlstate '45000' set message_text = msg; end if ; end$$
+ERROR 1054 (42S22): Unknown column 'id' in 'NEW'
+mysql> create trigger trg_patiend_id_insert before insert on Patient  for each row begin declare msg varchar(128); if new.pid <= 0 then set msg = concat('Error:Patient id should be > 0',cast(new.pid as char)); signal sqlstate '45000' set message_text = msg; end if ; end$$
+Query OK, 0 rows affected (0.21 sec)
+
+mysql> create trigger trg_patiend_id_insert before update on Patient  for each row begin declare msg varchar(128); if new.pid <= 0 then set msg = concat('Error:Patient id should be > 0',cast(new.pid as char)); signal sqlstate '45000' set message_text = msg; end if ; end$$
+ERROR 1359 (HY000): Trigger already exists
+mysql> create trigger trg_patiend_id_update before update on Patient  for each row begin declare msg varchar(128); if new.pid <= 0 then set msg = concat('Error:Patient id should be > 0',cast(new.pid as char)); signal sqlstate '45000' set message_text = msg; end if ; end$$
+Query OK, 0 rows affected (0.47 sec)
+
+mysql> create trigger trg_patiend_dob_update before update on Patient  for each row begin declare msg varchar(128); if ((new.dob <= '1880-01-01')and(new.dob > CURDATE()))  then set msg = concat('Error:Patient dob invalid',cast(new.dob as char)); signal sqlstate '45000' set message_text = msg; end if ; end$$
+ERROR 1235 (42000): This version of MySQL doesn't yet support 'multiple triggers with the same action time and event for one table'
+mysql> drop trigger if trg_patiend_dob_update $$
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'trg_patiend_dob_update' at line 1
+mysql> drop trigger if exists trg_patiend_dob_update $$
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+mysql> SHOW TRIGGERS WHERE `table` = 'Patient';
+    -> $$
++-----------------------+--------+---------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------+---------+----------+----------------+----------------------+----------------------+--------------------+
+| Trigger               | Event  | Table   | Statement                                                                                                                                                                                   | Timing | Created | sql_mode | Definer        | character_set_client | collation_connection | Database Collation |
++-----------------------+--------+---------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------+---------+----------+----------------+----------------------+----------------------+--------------------+
+| trg_patiend_id_insert | INSERT | Patient | begin declare msg varchar(128); if new.pid <= 0 then set msg = concat('Error:Patient id should be > 0',cast(new.pid as char)); signal sqlstate '45000' set message_text = msg; end if ; end | BEFORE | NULL    |          | root@localhost | utf8                 | utf8_general_ci      | latin1_swedish_ci  |
+| trg_patiend_id_update | UPDATE | Patient | begin declare msg varchar(128); if new.pid <= 0 then set msg = concat('Error:Patient id should be > 0',cast(new.pid as char)); signal sqlstate '45000' set message_text = msg; end if ; end | BEFORE | NULL    |          | root@localhost | utf8                 | utf8_general_ci      | latin1_swedish_ci  |
++-----------------------+--------+---------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------+---------+----------+----------------+----------------------+----------------------+--------------------+
+2 rows in set (0.08 sec)
+
+mysql> drop trigger if exists trg_patiend_id_insert $$
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> drop trigger if exists trg_patiend_id_update $$
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> create trigger trg_patiend_insert before update on Patient  for each row begin declare msg varchar(128); if new.pid <= 0 then set msg = concat('Error:Patient id should be > 0',cast(new.pid as char)); signal sqlstate '45000' set message_text = msg; end if ; end
+    -> $$
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> drop trigger if exists trg_patiend_insert $$Query OK, 0 rows affected (0.01 sec)
+
+mysql> create trigger trg_patiend_insert before insert on Patient  for each row begin declare msg varchar(128); if new.pid <= 0 then set msg = concat('Error:Patient id should be > 0',cast(new.pid as char));elseif new.dob < 1880-01-01 then set msg = concat('Error:Patient dob< 1880-01-01',cast(new.dob as char));elseif new.dob > CURDATE() then set msg = concat('Error:Patient  dob> current date',cast(new.dob as char));elseif (blood_group!='unk' AND blood_group!='DDD^Z' AND ); signal sqlstate '45000' set message_text = msg; end if ; end
+[1]+  Stopped                 mysql -u root -p
+user@UPLC:~$ mysql -u root -p
+Enter password: 
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 50
+Server version: 5.5.58-0+deb8u1 (Debian)
+
+Copyright (c) 2000, 2017, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> use hospital;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+mysql>  create trigger trg_patiend_insert before insert on Patient  for each row begin declare msg varchar(128); if new.pid <= 0 then set msg = concat('Error:Patient id should be > 0',cast(new.pid as char));elseif new.dob < 1880-01-01 then set msg = concat('Error:Patient dob< 1880-01-01',cast(new.dob as char));elseif new.dob > CURDATE() then set msg = concat('Error:Patient  dob> current date',cast(new.dob as char));elseif (blood_group!='unk' AND blood_group!='DDD^Z' AND ); signal sqlstate '45000' set message_text = msg; end if ; end
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 1
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'if new.pid <= 0 then set msg = concat('Error:Patient id should be > 0',cast(new.' at line 1
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'elseif new.dob < 1880-01-01 then set msg = concat('Error:Patient dob< 1880-01-01' at line 1
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'elseif new.dob > CURDATE() then set msg = concat('Error:Patient  dob> current da' at line 1
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'elseif (blood_group!='unk' AND blood_group!='DDD^Z' AND )' at line 1
+ERROR 1054 (42S22): Unknown column 'msg' in 'field list'
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'end if' at line 1
+    -> $$
+    -> $$
+    -> ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'end
+$$
+$$' at line 1
+mysql> delimiter $$
+mysql>  create trigger trg_patiend_insert before insert on Patient  for each row begin declare msg varchar(128); if new.pid <= 0 then set msg = concat('Error:Patient id should be > 0',cast(new.pid as char));elseif new.dob < 1880-01-01 then set msg = concat('Error:Patient dob< 1880-01-01',cast(new.dob as char));elseif new.dob > CURDATE() then set msg = concat('Error:Patient  dob> current date',cast(new.dob as char));elseif (blood_group!='unk' AND blood_group!='A+' AND blood_group!='A-' AND blood_group!='B+' AND blood_group!='B-' AND blood_group!='O+' AND blood_group!='O-' AND blood_group!='AB+' AND blood_group!='AB-' ) then set msg = concat('Error:Patient  blood group invalid',cast(new.blood_group as char)); signal sqlstate '45000' set message_text = msg; end if ; end $$
+Query OK, 0 rows affected (0.14 sec)
+
+mysql>  create trigger trg_patiend_update before update on Patient  for each row begin declare msg varchar(128); if new.pid <= 0 then set msg = concat('Error:Patient id should be > 0',cast(new.pid as char));elseif new.dob < 1880-01-01 then set msg = concat('Error:Patient dob< 1880-01-01',cast(new.dob as char));elseif new.dob > CURDATE() then set msg = concat('Error:Patient  dob> current date',cast(new.dob as char));elseif (blood_group!='unk' AND blood_group!='A+' AND blood_group!='A-' AND blood_group!='B+' AND blood_group!='B-' AND blood_group!='O+' AND blood_group!='O-' AND blood_group!='AB+' AND blood_group!='AB-' ) then set msg = concat('Error:Patient  blood group invalid',cast(new.blood_group as char)); signal sqlstate '45000' set message_text = msg; end if ; end $$
+Query OK, 0 rows affected (0.11 sec)
+
+mysql> insert into Patient values (1,"ABC",2000-02-02,'M',"uyeekhdds","A+",1234567890,0987654321,"mac@apple");
+    -> ;
+    -> $$
+Query OK, 1 row affected, 1 warning (0.21 sec)
+
+mysql> select * from Patient;
+    -> $$
++-----+------+------------+--------+-----------+-------------+------------+-----------+-----------+
+| pid | name | dob        | gender | address   | blood_group | phone_1    | phone_2   | email     |
++-----+------+------------+--------+-----------+-------------+------------+-----------+-----------+
+|   1 | ABC  | 0000-00-00 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
++-----+------+------------+--------+-----------+-------------+------------+-----------+-----------+
+1 row in set (0.04 sec)
+
+mysql> insert into Patient values (2,"ABC",'2000-02-02','M',"uyeekhdds","A+",1234567890,0987654321,"mac@apple"); ;$$
+ERROR 1054 (42S22): Unknown column 'blood_group' in 'field list'
+mysql> insert into Patient values (2,"ABC",2000-02-02,'M',"uyeekhdds","A+",1234567890,0987654321,"mac@apple"); ;$$
+Query OK, 1 row affected, 1 warning (0.08 sec)
+
+mysql> select * from Patient;
+    -> $$
++-----+------+------------+--------+-----------+-------------+------------+-----------+-----------+
+| pid | name | dob        | gender | address   | blood_group | phone_1    | phone_2   | email     |
++-----+------+------------+--------+-----------+-------------+------------+-----------+-----------+
+|   1 | ABC  | 0000-00-00 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
+|   2 | ABC  | 0000-00-00 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
++-----+------+------------+--------+-----------+-------------+------------+-----------+-----------+
+2 rows in set (0.00 sec)
+
+mysql> insert into Patient values (2,"ABC","2000-02-02",'M',"uyeekhdds","A+",1234567890,0987654321,"mac@apple"); ;$$
+ERROR 1054 (42S22): Unknown column 'blood_group' in 'field list'
+mysql> insert into Patient values (2,"ABC",'2000-02-02','M',"uyeekhdds","A+",1234567890,0987654321,"mac@apple"); ;$$
+ERROR 1054 (42S22): Unknown column 'blood_group' in 'field list'
+mysql> insert into Patient values (2,"ABC",'DATE: Manual Date','2000-02-02','M',"uyeekhdds","A+",1234567890,0987654321,"mac@apple"); ;$$
+ERROR 1136 (21S01): Column count doesn't match value count at row 1
+mysql> insert into Patient values (2,"ABC",'DATE: Manual Date',2000-02-02,'M',"uyeekhdds","A+",1234567890,0987654321,"mac@apple"); ;$$
+ERROR 1136 (21S01): Column count doesn't match value count at row 1
+mysql> insert into Patient values (2,"ABC",2000-02-02,'M',"uyeekhdds","A+",1234567890,0987654321,"mac@apple"); ;$$
+ERROR 1062 (23000): Duplicate entry '2' for key 'PRIMARY'
+mysql> insert into Patient(pid,name,dob,gender,address,blood_group,phone_1,phone_2,email) values (3,"ABC",'2000-02-02','M',"uyeekhdds","A+",1234567890,0987654321,"mac@apple"); ;$$
+ERROR 1054 (42S22): Unknown column 'blood_group' in 'field list'
+mysql> insert into Patient(pid,name,dob,gender,address,blood_group,phone_1,phone_2,email) values (3,"ABC",2000-02-02,'M',"uyeekhdds","A+",1234567890,0987654321,"mac@apple"); ;$$
+Query OK, 1 row affected, 1 warning (0.11 sec)
+
+mysql> insert into Patient(pid,name,dob,gender,address,blood_group,phone_1,phone_2,email) values (4,"ABC",2000-2-02,'M',"uyeekhdds","A+",1234567890,0987654321,"mac@apple"); ;$$
+Query OK, 1 row affected, 1 warning (0.09 sec)
+
+mysql> select * from Patient;
+    -> $$
++-----+------+------------+--------+-----------+-------------+------------+-----------+-----------+
+| pid | name | dob        | gender | address   | blood_group | phone_1    | phone_2   | email     |
++-----+------+------------+--------+-----------+-------------+------------+-----------+-----------+
+|   1 | ABC  | 0000-00-00 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
+|   2 | ABC  | 0000-00-00 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
+|   3 | ABC  | 0000-00-00 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
+|   4 | ABC  | 0000-00-00 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
++-----+------+------------+--------+-----------+-------------+------------+-----------+-----------+
+4 rows in set (0.00 sec)
+
+mysql> insert into Patient(pid,name,dob,gender,address,blood_group,phone_1,phone_2,email) values (-1,"ABC",2000-2-02,'M',"uyeekhdds","A+",1234567890,0987654321,"mac@apple"); ;$$
+Query OK, 1 row affected, 1 warning (0.10 sec)
+
+mysql> select * from Patient;
+    -> $$
++-----+------+------------+--------+-----------+-------------+------------+-----------+-----------+
+| pid | name | dob        | gender | address   | blood_group | phone_1    | phone_2   | email     |
++-----+------+------------+--------+-----------+-------------+------------+-----------+-----------+
+|  -1 | ABC  | 0000-00-00 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
+|   1 | ABC  | 0000-00-00 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
+|   2 | ABC  | 0000-00-00 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
+|   3 | ABC  | 0000-00-00 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
+|   4 | ABC  | 0000-00-00 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
++-----+------+------------+--------+-----------+-------------+------------+-----------+-----------+
+5 rows in set (0.00 sec)
+
+mysql>  create trigger trg_patiend_insert before insert on Patient  for each row begin declare msg varchar(128); if new.pid <= 0 then set msg = concat('Error:Patient id should be > 0',cast(new.pid as char)); signal sqlstate '45000' set message_text = msg; end if ; end $$ERROR 1235 (42000): This version of MySQL doesn't yet support 'multiple triggers with the same action time and event for one table'
+mysql> end $$ $$;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'end' at line 1
+ERROR: 
+No query specified
+
+    -> $$
+ERROR 1065 (42000): Query was empty
+mysql> drop trigger if exists trg_patiend_id_insert $$
+Query OK, 0 rows affected, 1 warning (0.00 sec)
+
+mysql>  create trigger trg_patiend_insert before insert on Patient  for each row begin declare msg varchar(128); if new.pid <= 0 then set msg = concat('Error:Patient id should be > 0',cast(new.pid as char)); signal sqlstate '45000' set message_text = msg; end if ; end $$
+ERROR 1235 (42000): This version of MySQL doesn't yet support 'multiple triggers with the same action time and event for one table'
+mysql> drop trigger if exists trg_patiend_insert $$Query OK, 0 rows affected (0.05 sec)
+
+mysql>  create trigger trg_patiend_insert before insert on Patient  for each row begin declare msg varchar(128); if new.pid <= 0 then set msg = concat('Error:Patient id should be > 0',cast(new.pid as char)); signal sqlstate '45000' set message_text = msg; end if ; end $$
+Query OK, 0 rows affected (0.12 sec)
+
+mysql> insert into Patient(pid,name,dob,gender,address,blood_group,phone_1,phone_2,email) values (-2,"ABC",2000-2-02,'M',"uyeekhdds","A+",1234567890,0987654321,"mac@apple"); ;$$
+ERROR 1644 (45000): Error:Patient id should be > 0-2
+mysql> drop trigger if exists trg_patiend_insert $$Query OK, 0 rows affected (0.05 sec)
+
+mysql>  create trigger trg_patiend_insert before insert on Patient  for each row begin declare msg varchar(128); if new.pid <= 0 then set msg = concat('Error:Patient id should be > 0',); signal sqlstate '45000' set message_text = msg; end if ; end $$
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '); signal sqlstate '45000' set message_text = msg; end if ; end' at line 1
+mysql>  create trigger trg_patiend_insert before insert on Patient  for each row begin declare msg varchar(128); if new.pid <= 0 then set msg = concat('Error:Patient id should be > 0'); signal sqlstate '45000' set message_text = msg; end if ; end $$
+Query OK, 0 rows affected (0.12 sec)
+
+mysql> insert into Patient(pid,name,dob,gender,address,blood_group,phone_1,phone_2,email) values (-2,"ABC",2000-2-02,'M',"uyeekhdds","A+",1234567890,0987654321,"mac@apple"); ;$$
+ERROR 1644 (45000): Error:Patient id should be > 0
+mysql> drop trigger if exists trg_patiend_insert $$Query OK, 0 rows affected (0.07 sec)
+
+mysql>  create trigger trg_patiend_insert before insert on Patient  for each row begin declare msg varchar(128); if new.pid <= 0 then set msg = 'Error:Patient id should be > 0'; signal sqlstate '45000' set message_text = msg; end if ; end $$
+Query OK, 0 rows affected (0.09 sec)
+
+mysql> insert into Patient(pid,name,dob,gender,address,blood_group,phone_1,phone_2,email) values (-2,"ABC",2000-2-02,'M',"uyeekhdds","A+",1234567890,0987654321,"mac@apple"); ;$$
+ERROR 1644 (45000): Error:Patient id should be > 0
+mysql>  create trigger trg_patiend_update before update on Patient  for each row begin declare msg varchar(128); if new.pid <= 0 then set msg = 'Error:Patient id should be > 0';elseif new.dob < 1880-01-01 then set msg = 'Error:Patient dob< 1880-01-01';elseif new.dob > CURDATE() then set msg = 'Error:Patient  dob> current date';elseif (blood_group!='unk' AND blood_group!='A+' AND blood_group!='A-' AND blood_group!='B+' AND blood_group!='B-' AND blood_group!='O+' AND blood_group!='O-' AND blood_group!='AB+' AND blood_group!='AB-' ) then set msg ='Error:Patient  blood group invalid'; signal sqlstate '45000' set message_text = msg; end if ; end $$ERROR 1235 (42000): This version of MySQL doesn't yet support 'multiple triggers with the same action time and event for one table'
+mysql> drop trigger if exists trg_patiend_insert $$Query OK, 0 rows affected (0.06 sec)
+
+mysql>  create trigger trg_patiend_update before update on Patient  for each row begin declare msg varchar(128); if new.pid <= 0 then set msg = 'Error:Patient id should be > 0';elseif new.dob < 1880-01-01 then set msg = 'Error:Patient dob< 1880-01-01';elseif new.dob > CURDATE() then set msg = 'Error:Patient  dob> current date';elseif (blood_group!='unk' AND blood_group!='A+' AND blood_group!='A-' AND blood_group!='B+' AND blood_group!='B-' AND blood_group!='O+' AND blood_group!='O-' AND blood_group!='AB+' AND blood_group!='AB-' ) then set msg ='Error:Patient  blood group invalid'; signal sqlstate '45000' set message_text = msg; end if ; end $$
+ERROR 1235 (42000): This version of MySQL doesn't yet support 'multiple triggers with the same action time and event for one table'
+mysql>  create trigger trg_patiend_insert before insert on Patient  for each row begin declare msg varchar(128); if new.pid <= 0 then set msg = 'Error:Patient id should be > 0';elseif new.dob < 1880-01-01 then set msg = 'Error:Patient dob< 1880-01-01';elseif new.dob > CURDATE() then set msg = 'Error:Patient  dob> current date';elseif (blood_group!='unk' AND blood_group!='A+' AND blood_group!='A-' AND blood_group!='B+' AND blood_group!='B-' AND blood_group!='O+' AND blood_group!='O-' AND blood_group!='AB+' AND blood_group!='AB-' ) then set msg ='Error:Patient  blood group invalid'; signal sqlstate '45000' set message_text = msg; end if ; end $$
+Query OK, 0 rows affected (0.11 sec)
+
+mysql> insert into Patient(pid,name,dob,gender,address,blood_group,phone_1,phone_2,email) values (-2,"ABC",2000-2-02,'M',"uyeekhdds","A+",1234567890,0987654321,"mac@apple"); ;$$
+Query OK, 1 row affected, 1 warning (0.09 sec)
+
+mysql> insert into Patient(pid,name,dob,gender,address,blood_group,phone_1,phone_2,email) values (-3,"ABC",'2000-2-02','M',"uyeekhdds",'A+',1234567890,0987654321,"mac@apple"); ;$$
+Query OK, 1 row affected (0.08 sec)
+
+mysql> select * from Patient;
+    -> $$
++-----+------+------------+--------+-----------+-------------+------------+-----------+-----------+
+| pid | name | dob        | gender | address   | blood_group | phone_1    | phone_2   | email     |
++-----+------+------------+--------+-----------+-------------+------------+-----------+-----------+
+|  -3 | ABC  | 2000-02-02 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
+|  -2 | ABC  | 0000-00-00 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
+|  -1 | ABC  | 0000-00-00 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
+|   1 | ABC  | 0000-00-00 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
+|   2 | ABC  | 0000-00-00 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
+|   3 | ABC  | 0000-00-00 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
+|   4 | ABC  | 0000-00-00 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
++-----+------+------------+--------+-----------+-------------+------------+-----------+-----------+
+7 rows in set (0.00 sec)
+
+mysql> insert into Patient(pid,name,dob,gender,address,blood_group,phone_1,phone_2,email) values (-3,'ABC','2000-2-02','M','uyeekhdds','A+',1234567890,0987654321,'mac@apple'); ;$$
+ERROR 1062 (23000): Duplicate entry '-3' for key 'PRIMARY'
+mysql> insert into Patient(pid,name,dob,gender,address,blood_group,phone_1,phone_2,email) values (-4,'ABC','2000-2-02','M','uyeekhdds','A+',1234567890,0987654321,'mac@apple'); ;$$
+Query OK, 1 row affected (0.08 sec)
+
+mysql> select * from Patient;
+    -> $$
++-----+------+------------+--------+-----------+-------------+------------+-----------+-----------+
+| pid | name | dob        | gender | address   | blood_group | phone_1    | phone_2   | email     |
++-----+------+------------+--------+-----------+-------------+------------+-----------+-----------+
+|  -4 | ABC  | 2000-02-02 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
+|  -3 | ABC  | 2000-02-02 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
+|  -2 | ABC  | 0000-00-00 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
+|  -1 | ABC  | 0000-00-00 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
+|   1 | ABC  | 0000-00-00 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
+|   2 | ABC  | 0000-00-00 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
+|   3 | ABC  | 0000-00-00 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
+|   4 | ABC  | 0000-00-00 | M      | uyeekhdds | A+          | 1234567890 | 987654321 | mac@apple |
++-----+------+------------+--------+-----------+-------------+------------+-----
